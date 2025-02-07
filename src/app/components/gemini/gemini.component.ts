@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { getGenerativeModel, getVertexAI, VertexAI } from '@angular/fire/vertexai';
+import { getGenerativeModel, VertexAI, ModelParams } from '@angular/fire/vertexai';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -11,13 +11,23 @@ import { AuthService } from '../../services/auth.service';
 export class GeminiComponent {
   auth = inject(AuthService)
   gemini = inject(VertexAI)
-  model = getGenerativeModel(this.gemini, { model: "gemini-1.5-flash" });
+  
+
+  modelParams: ModelParams = {
+    model: 'gemini-1.5-flash',
+    systemInstruction: 'You are a coin flip simulator, only answer with heads or tails, only valid input is "Flip a coin", everything else answer "Invalid Input"',
+  }
+
+  model = getGenerativeModel(this.gemini, this.modelParams)
+
+
+
   async testFunction() {
     console.log('button clicked')
-    const prompt = "Flip a coin, only answer with heads or tails"
+    const prompt = "roll a 20 sided dice"
     const result = await this.model.generateContent(prompt)
-    const response = result.response;
-    const text = response.text();
-    console.log(text);
+    const response = result.response
+    const text = response.text()
+    console.log(text)
   }
 }
