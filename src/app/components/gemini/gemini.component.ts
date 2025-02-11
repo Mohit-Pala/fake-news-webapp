@@ -12,11 +12,20 @@ export class GeminiComponent {
   auth = inject(AuthService)
   gemini = inject(VertexAI)
   
-
+  systemIns = `
+    You are a fake news awareness bot, you may get a real news article or a fake one
+    Only provide 1 related url
+    keep list to 3 items
+    Reply in the following format
+    facts:{LIST OF FACTS, YES USE PARENTHESIS}
+    URL:<RelatedURL>
+    words:{LIST OF WORDS, YES USE PARENTHESIS}
+  `
   modelParams: ModelParams = {
     model: 'gemini-1.5-flash',
-    systemInstruction: 'You are a fake news awareness bot. You have to provide the following (1 line for each): Related real articles (with url), Words which may make a news fake, facts. DO NOT SAY IF A NEWS SOURCE IS FAKE OR NOT. Only provide facts so that user can decide for themselves',
+    systemInstruction: this.systemIns
   }
+  
 
   model = getGenerativeModel(this.gemini, this.modelParams)
 
@@ -25,6 +34,15 @@ export class GeminiComponent {
   async testFunction() {
     console.log('button clicked')
     const prompt = "The sun will explode in 2026 after humans put a dyson sphere on the sun"
+    const result = await this.model.generateContent(prompt)
+    const response = result.response
+    const text = response.text()
+    console.log(text)
+  }
+
+  async testReal() {
+    console.log('real clicked')
+    const prompt = "Tariffs were announced against China, Canada, and Mexico, continuing a trade war with China and initiating a trade war with Canada and Mexico despite the United States–Mexico–Canada Agreement negotiated by Trump when he was previously president."
     const result = await this.model.generateContent(prompt)
     const response = result.response
     const text = response.text()
