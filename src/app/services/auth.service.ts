@@ -6,6 +6,6 @@ import { Auth } from '@angular/fire/auth';
 })
 export class AuthService {
 
-  constructor() { }
+  constructor() {}
   firebase = inject(Auth)
 }
